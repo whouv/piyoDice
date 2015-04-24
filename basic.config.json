@@ -1,0 +1,41 @@
+[
+	{
+	body: /(\n|^)(\d*?[rRｒＲ])??[\s　]??[\d\-－‐＋\+]*\d*?[dDｄＤ]\d*?/,
+	file: '../Dice/basic_dice.js'
+	},
+	{
+	body: /^[AaＡａ][CcＣｃ][TtＴｔ]/,
+	file: '../Dice/basic_dice.js'
+	},
+	{
+	body: /^[YyＹｙ][UuＵｕ][MmＭｍ][EeＥｅ]/,
+	file: '../Dice/basic_dice.js'
+	},
+
+	{
+	body: /^[cCｃＣ][hHｈＨ][oOｏＯ][iIｉＩ][cCｃＣ][EeＥｅ][\s　]/,
+	file: '../Dice/basic_dice.js'
+	},
+
+	{
+	body: /^[hHｈＨ][EeＥｅ][lLｌＬ][pPｐＰ]/,
+	file: '../Dice/basic_help.js'
+	},
+
+	{
+	body: /(\n|^)\d*(sr|ｓｒ).*[dDｄＤ]/,
+	file: '../Dice/sr_dice.js'
+	},
+	{
+	body: /(\n|^)(dwarfname|ドワーフネーム|ドワーフ名|ドワーフ表)/,
+	file: '../Chart/dwarf_male_name.js'
+	},
+	{
+	body: /(\n|^)(dmname|ドワーフマン|ドワーフ男名|ドワーフ男表)/,
+	file: '../Chart/dwarf_male_name.js'
+	},
+	{
+	body: /(\n|^)(dfname|dwarffemale|dwarfwoman|ドワーフウーマン|ドワーフ女名|ドワーフ女表)/,
+	file: '../Chart/dwarf_female_name.js'
+	}
+]
