@@ -33,7 +33,7 @@ function (user, body){
 	var linetemp = "";
 	var inlinetemp = "";
 	var output = "";
-	var flag_calc = 0;
+	var flag_calc = false;
 
 	//行数分の繰り返し指定：for_g
 
@@ -124,6 +124,7 @@ function (user, body){
 						var totaltemp = 0;
 						var X = 1;
 						var Y = 6;
+						var flag_d66 = false;//d66検出用
 
 						//式種毎処理の繰り返し指定：for_j
 
@@ -145,7 +146,10 @@ function (user, body){
 								var X = temp[j].split("D")[0];
 								var Y = temp[j].split("D")[1];
 
-								if (X == "") X = 1;
+								if (X == "") {
+									X = 1;
+									flag_d66 = true;
+								}
 								if (X == "-") X = -1;
 								if (X < 0) {
 									X = - X;
@@ -161,10 +165,8 @@ function (user, body){
 								for (z = 1; z <= X; z++){
 									var thisdie = 0;
 									var detaildie = "";
-									if (Y != 66) {
-										thisdie=Dice(Y);
-										detaildie = thisdie;
-									}else{
+									if (flag_d66 == true && Y == 66) {
+										//d66処理
 										var die1 = Dice(6);
 										var die2 = Dice(6);
 										detaildie = "(" + die1 + "," + die2 + ")";
@@ -174,6 +176,10 @@ function (user, body){
 											die2=torima;
 										}
 										thisdie=die1*10 + die2;
+									}else{
+										//通常処理
+										thisdie=Dice(Y);
+										detaildie = thisdie;
 									}
 									rolltemp += thisdie;
 									detailtemp.push(detaildie);
@@ -182,12 +188,12 @@ function (user, body){
 //出目をソートしたい時は、↑の行の頭のスラッシュを消して下さい。
 
 //1dのみであってもd66モードのみ詳細を表示する。
-								if (X == 1 && Y != 66) {
+								detail =' ('+detailtemp+') ';
+								if (X == 1) {
 									detail = '';
-								}else if(X == 1 && Y == 66){
+									if(flag_d66 == true && Y == 66){
 									detail = detailtemp;
-								}else{
-									detail = ' ('+detailtemp+') ';
+									}
 								}
 
 								diceResult = diceResult + ' ' + pmsign + ' ' + X + 'D' + Y + ' : ' + rolltemp + detail;
@@ -288,10 +294,10 @@ function (user, body){
 						}
 						var noneqArray =["","<","<=","=",">=",">"];
 						inlinetemp = '\n' + '　' + comment + ordinal + '  (ぴよぴよ…)   ' + result + '　[ 計：' + total +' ] ' + noneqArray[param_eq] + num_achieve +' '+ judgeResult;
-						flag_calc = 1;
+						flag_calc = true;
 					}else{//param_eq==0
 						inlinetemp = '\n' + '　' + comment + ordinal + '  (ぴよぴよ…)   ' + result + '　[ 計：' + total + ' ]';
-						flag_calc = 1;
+						flag_calc = true;
 					}//if_param_eq
 				}//for_i
 
@@ -316,7 +322,7 @@ function (user, body){
 			}else{
 				linetemp += '\n' + '　' + '  (ぴよぴよ…)   ACT : ' + thisdie + ' '+ actarray[thisdie];
 			}
-			flag_calc=1;
+			flag_calc=true;
 		}else if(line[g].match(/^[YyＹｙ][UuＵｕ][MmＭｍ][EeＥｅ]/)&&line[g].match(/^[YyＹｙ][UuＵｕ][MmＭｍ][EeＥｅ][^\s　]/)==null){
 			//夢見表の実装
 			var thisdie;
@@ -353,7 +359,7 @@ function (user, body){
 			dreamarray[56] = "復讐";
 			dreamarray[66] = "婚礼";
 			linetemp += '\n' + '　' + '（すやすや…）　夢見表 : ' + thisdie + ' ' + detaildie + ' ' + dreamarray[thisdie];
-			flag_calc=1;
+			flag_calc=true;
 		}else if(line[g].match(/^[cCｃＣ][hHｈＨ][oOｏＯ][iIｉＩ][cCｃＣ][EeＥｅ][\s　]/)){
 			//choiceの実装
 			var choiceElm;
@@ -364,7 +370,7 @@ function (user, body){
 			var numOfElm = choiceElm.length - 1
 			var Y = Dice(numOfElm);
 			linetemp += '\n' + '　' + '「ぴよ？」 choice : ' + choiceElm[ Y ];
-			flag_calc=1;
+			flag_calc=true;
 		//自然言語のみの行の結果を処理：else_line[g]
 		} else {
 			comment = line[g];
@@ -380,7 +386,7 @@ function (user, body){
 //統合結果を出力
 
 	if (output.match(/function\s\(user\,\sbody/)) return;
-	if (flag_calc == 0 ) return;
+	if (!flag_calc) return;
 	return output;
 
 }
