@@ -33,6 +33,7 @@ function (user, body){
 	var linetemp = "";
 	var inlinetemp = "";
 	var output = "";
+	var flag_calc = 0;
 
 	//s”•ª‚ÌŒJ‚è•Ô‚µw’èFfor_g
 
@@ -287,10 +288,10 @@ function (user, body){
 						}
 						var noneqArray =["","<","<=","=",">=",">"];
 						inlinetemp = '\n' + '@' + comment + ordinal + '  (‚Ò‚æ‚Ò‚æc)   ' + result + '@[ ŒvF' + total +' ] ' + noneqArray[param_eq] + num_achieve +' '+ judgeResult;
-						//flag_calc = 1;
+						flag_calc = 1;
 					}else{//param_eq==0
 						inlinetemp = '\n' + '@' + comment + ordinal + '  (‚Ò‚æ‚Ò‚æc)   ' + result + '@[ ŒvF' + total + ' ]';
-						//flag_calc = 1;
+						flag_calc = 1;
 					}//if_param_eq
 				}//for_i
 
@@ -302,7 +303,7 @@ function (user, body){
 
 		//“Áê”½‰•¶šˆ—:else_line[g]
 		//
-		}else if(line[g].match(/^[Aa‚`‚][Cc‚b‚ƒ][Tt‚s‚”]/)){
+		}else if(line[g].match(/^[Aa‚`‚][Cc‚b‚ƒ][Tt‚s‚”]/)&&line[g].match(/^[Aa‚`‚][Cc‚b‚ƒ][Tt‚s‚”][^\s@]/) == null){
 			//ƒAƒNƒVƒfƒ“ƒg•\‚ÌÀ‘•
 			var Y = 6;
 			var thisdie;
@@ -315,7 +316,8 @@ function (user, body){
 			}else{
 				linetemp += '\n' + '@' + '  (‚Ò‚æ‚Ò‚æc)   ACT : ' + thisdie + ' '+ actarray[thisdie];
 			}
-		}else if(line[g].match(/^[Yy‚x‚™][Uu‚t‚•][Mm‚l‚][Ee‚d‚…]/)){
+			flag_calc=1;
+		}else if(line[g].match(/^[Yy‚x‚™][Uu‚t‚•][Mm‚l‚][Ee‚d‚…]/)&&line[g].match(/^[Yy‚x‚™][Uu‚t‚•][Mm‚l‚][Ee‚d‚…][^\s@]/)==null){
 			//–²Œ©•\‚ÌÀ‘•
 			var thisdie;
 			var die1;
@@ -351,6 +353,7 @@ function (user, body){
 			dreamarray[56] = "•œQ";
 			dreamarray[66] = "¥—ç";
 			linetemp += '\n' + '@' + 'i‚·‚â‚·‚âcj@–²Œ©•\ : ' + thisdie + ' ' + detaildie + ' ' + dreamarray[thisdie];
+			flag_calc=1;
 		}else if(line[g].match(/^[cC‚ƒ‚b][hH‚ˆ‚g][oO‚‚n][iI‚‰‚h][cC‚ƒ‚b][Ee‚d‚…][\s@]/)){
 			//choice‚ÌÀ‘•
 			var choiceElm;
@@ -361,6 +364,7 @@ function (user, body){
 			var numOfElm = choiceElm.length - 1
 			var Y = Dice(numOfElm);
 			linetemp += '\n' + '@' + 'u‚Ò‚æHv choice : ' + choiceElm[ Y ];
+			flag_calc=1;
 		//©‘RŒ¾Œê‚Ì‚İ‚Ìs‚ÌŒ‹‰Ê‚ğˆ—Felse_line[g]
 		} else {
 			comment = line[g];
@@ -376,7 +380,7 @@ function (user, body){
 //“‡Œ‹‰Ê‚ğo—Í
 
 	if (output.match(/function\s\(user\,\sbody/)) return;
-
+	if (flag_calc == 0 ) return;
 	return output;
 
 }
