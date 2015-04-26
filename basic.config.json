@@ -23,6 +23,11 @@
 	},
 
 	{
+	body: /^[mM‚‚l][oO‚n‚][fF‚e‚†][uU‚t‚•]/,
+	file: '../Chart/kcrpg_chart.js'
+	},
+
+	{
 	body: /(\n|^)\d*(sr|‚“‚’).*[dD‚„‚c]/,
 	file: '../Dice/sr_dice.js'
 	},
