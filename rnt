@@ -1,0 +1,33 @@
+
+		//更新部分start(暴走表の実装)
+		}else if(line[g].match(/^[RrRr][NnNn][TtTｔ]/)&&line[g].match(/^[RrRr][NnNn][TtTｔ][^\s　]/) == null){
+			//暴走表の実装
+			var Y = 6;
+			var thisdie;
+			thisdie = Dice(Y);
+			var actarray = ["","妄想-シーン・ラウンド終了時に行動力１点減少。","狂戦士-自分が回避判定を行いたい場合は1d6行動力消費","興奮-自分の行動力を消費・減少する際余分に１点消費","溺愛-最も感情値の高い相手にしか声援できない","慢心-行為判定の時2d6の出目が４以下でファンブルになる","絶望-自分がダメージを受けた時ダメージが1d6上昇"];
+			if(thisdie==6){
+				var wasteMoveP = 0;
+				wasteMoveP = Dice(Y);
+				linetemp += '\n' + '　' + '  (しゃー！…)   暴走 : ' + thisdie + ' '+ actarray[thisdie] + ' 消費1d6 : '+　wasteMoveP;
+			}else{
+				linetemp += '\n' + '　' + '  (しゃー！…)   暴走 : ' + thisdie + ' '+ actarray[thisdie];
+			}
+			flag_calc=1;
+
+
+		}else if(line[g].match(/^[RrRr][PpPp][1]/)&&line[g].match(/^[RrRr][PpPp][1][^\s　]/) == null){
+			//舞台の実装（仮作成）
+			var Y = 5;
+			var thisdie;
+			thisdie = Dice(Y);
+			var actarray = ["","道端","遠征帰り","公園","任務準備中","艦隊戦"];
+			if(thisdie==6){
+				var wasteMoveP = 0;
+				wasteMoveP = Dice(Y);
+				linetemp += '\n' + '　' + '  (試験中)   RP舞台表 :  '+ actarray[thisdie] + ' 消費1d6 : '+　wasteMoveP;
+			}else{
+				linetemp += '\n' + '　' + '  (試験中)   RP舞台表 :  '+ actarray[thisdie];
+			}
+			flag_calc=1;
+		//更新部分end
