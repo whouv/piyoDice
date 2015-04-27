@@ -274,7 +274,7 @@ function (user, body){
 								judgeResult = "é∏îs";
 							}
 						}else if(param_eq == 3){
-							if(total = num_achieve){
+							if(total == num_achieve){
 								judgeResult = "ê¨å˜";
 							}else{
 								judgeResult = "é∏îs";
