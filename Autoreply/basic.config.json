@@ -28,6 +28,11 @@
 	},
 
 	{
+	body: /^HyperMofuMofu/,
+	file: '../Chart/kcrpg_chart.js'
+	},
+
+	{
 	body: /(\n|^)\d*(sr|‚“‚’).*[dD‚„‚c]/,
 	file: '../Dice/sr_dice.js'
 	},
