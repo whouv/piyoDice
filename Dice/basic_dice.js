@@ -34,6 +34,7 @@ function (user, body){
 	var inlinetemp = "";
 	var output = "";
 	var flag_calc = false;
+	var flag_kcrpg = true;//艦これRPG用スペシャルファンブル用フラグ
 
 	//行数分の繰り返し指定：for_g
 
@@ -97,16 +98,17 @@ function (user, body){
 			//等号不等号 non:0 <:1 <=:2 =:3 >=:4 >:5
 				var param_eq = 0;
 				var num_achieve = 0; //目標値
+				var flag_special=false;
+				var flag_fumble=false;
 
 				for (i = 0; i < block.length; i++){
+				//if (block[i].match(/[^\d\+\-\,ＤｄDd、，]/)){
 					//自然言語ブロックを処理：if_block[i]
-
-//					if (block[i].match(/[^\d\+\-\,ＤｄDd、，]/)){
 					if (i > 0){
 						comtemp = block[i] + " ";
 						comment += comtemp;
 					//判定式ブロックの処理を開始：else_block[i]
-//					} else if (block[i].match(/[\dＤｄDd\+\-、，\,]/)) {
+				//} else if (block[i].match(/[\dＤｄDd\+\-、，\,]/)) {
 					} else if (i == 0 && block[i].match(/[\dＤｄDd\+\-]/)) {
 
 						block[i] = block[i].replace(/[Ｄｄd]/g,"D");
@@ -165,7 +167,7 @@ function (user, body){
 								for (z = 1; z <= X; z++){
 									var thisdie = 0;
 									var detaildie = "";
-									if (flag_d66 == true && Y == 66) {
+									if (flag_d66 && Y == 66) {
 										//d66処理
 										var die1 = Dice(6);
 										var die2 = Dice(6);
@@ -184,6 +186,17 @@ function (user, body){
 									rolltemp += thisdie;
 									detailtemp.push(detaildie);
 								}
+
+								//special fumble処理
+								if(flag_kcrpg && X==2 && Y==6) {
+									if(rolltemp == 12) {
+										flag_special=true;
+									}
+									if(rolltemp ==2){
+										flag_fumble = true;
+									}
+								}
+
 //								detail = ' (' + detailtemp.sort(function compareNumbers(a, b) {return b - a;}) + ')';
 //出目をソートしたい時は、↑の行の頭のスラッシュを消して下さい。
 
@@ -281,15 +294,31 @@ function (user, body){
 							}
 						}else if(param_eq == 4){
 							if(total >= num_achieve){
-								judgeResult = "成功";
+								if(flag_special){
+									judgeResult = "スペシャル！";
+								}else{
+									judgeResult = "成功";
+								}
 							}else{
-								judgeResult = "失敗";
+								if(flag_fumble){
+									judgeResult = "ファンブル！";
+								}else{
+									judgeResult = "失敗";
+								}
 							}
 						}else if(param_eq == 5){
 							if(total > num_achieve){
-								judgeResult = "成功";
+								if(flag_special){
+									judgeResult = "スペシャル！";
+								}else{
+									judgeResult = "成功";
+								}
 							}else{
-								judgeResult = "失敗";
+								if(flag_fumble){
+									judgeResult = "ファンブル！";
+								}else{
+									judgeResult = "失敗";
+								}
 							}
 						}
 						var noneqArray =["","<","<=","=",">=",">"];
