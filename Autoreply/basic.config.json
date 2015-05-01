@@ -5,11 +5,11 @@
 	},
 	{
 	body: /^[Aa‚`‚][Cc‚b‚ƒ][Tt‚s‚”]/,
-	file: '../Dice/basic_dice.js'
+	file: '../Chart/kcrpg_chart.js'
 	},
 	{
 	body: /^[Yy‚x‚™][Uu‚t‚•][Mm‚l‚][Ee‚d‚…]/,
-	file: '../Dice/basic_dice.js'
+	file: '../Chart/kcrpg_chart.js'
 	},
 
 	{

@@ -25,7 +25,31 @@ function (user, body){
 		}
 		return "\n error : adjuster_d66 : 'num' must be number from d66";
 	}
-	function random_chart_multi(chart_array, die, num_dice){
+	function random_chart_d66(chart_array,mozi){
+		if ((chart_array instanceof Array) && (chart_array.length >= 22)){
+			//問題なし 22はd66の値の数+1
+		}else{
+			return "\n error : random_chart_d66 : 'chart_array' hasn't enough elements";
+		}
+		var detail = " ";
+		var return_line = "";
+		
+		var total;
+		var die1 = Dice(6);
+		var die2 = Dice(6);
+
+		if (die1 >= die2){
+			total = die2*10 + die1;
+		}else{
+			total = die1*10 + die2;
+		}
+		detail= ' (' + die1 + ',' + die2 + ') ';
+
+		return_line = '\n　(' + mozi + ')　' + chart_array[0] + ' : ' + total + detail + chart_array[adjuster_d66(total)];
+		return return_line;
+	}
+
+	function random_chart_multi(chart_array, die, num_dice, mozi){
 		//ランダムチャート用関数
 		//chart_array:チャートの中身の配列
 		//chart_array[0]:コマンド名
@@ -60,12 +84,12 @@ function (user, body){
 
 		if(num_dice!=1) detail= ' (' + detailtemp + ') ';
 
-		return_line = '\n　(ぴよぴよ…)　' + chart_array[0] + ' : ' + total + detail + chart_array[total];
+		return_line = '\n　(' + mozi + ')　' + chart_array[0] + ' : ' + total + detail + chart_array[total];
 		return return_line;
 	}
 
-	function random_chart(chart_array, die){
-		return random_chart_multi(chart_array,die,1);
+	function random_chart(chart_array, die, mozi){
+		return random_chart_multi(chart_array,die,1,mozi);
 	}
 
 //ここまで関数
@@ -79,7 +103,7 @@ function (user, body){
 	var linetemp = "";
 	var output = "";
 
-
+//----------------------------------ここからサンプル----------------------------------
 	if(body.match(/^[mMｍＭ][oOＯｏ][fFＦｆ][uUＵｕ]/)&&body.match(/^[mMｍＭ][oOＯｏ][fFＦｆ][uUＵｕ][^\s　]/)==null){
 		//テストコマンド : もふ
 
@@ -87,17 +111,40 @@ function (user, body){
 		var mofu_array = ["Mofu","もふ！","もふもふ","もふっもふっ","もふう…","もふん","もふ…zzz"];
 
 		//random_chart(表の配列,サイコロの面数) サイコロは一個固定
-		linetemp = random_chart(mofu_array,mofu_array.length-1);
+		linetemp = random_chart(mofu_array,mofu_array.length-1,"もふもふ…");
 	}
 
 	if(body.match(/^HyperMofuMofu/) &&body.match(/^HyperMofuMofu[^\s　]/) == null ){
 		//サンプルコマンド : はいぱーもふもふ
 
 		//表用の配列を用意。array[0]はコマンド名。2d6を想定しているためmofu_array[1]は空
-		var mofu_array = ["HyperMofuMofu","","もふ","もふふ","もふもふ","もふもふん","もふもふも？","もふもっふもふ","もふんもふもふ？","もふもふもふもふ…","もふーん！もふーん！","もふもふもふももふもふ","もふん…もふん…もふん…"];
+		var mofu_array = ["HyperMofuMofu","","もふ","もふふ","もふもふ",
+				"もふもふん","もふもふも？","もふもっふもふ","もふんもふもふ？","もふもふもふもふ…",
+				"もふーん！もふーん！","もふもふもふももふもふ","もふん…もふん…もふん…"];
+		//random_chart_multi(表の配列,サイコロの面数,サイコロの個数)
+		linetemp = random_chart_multi(mofu_array,6,2,"もふもふ…");
+	}
 
-		//ramdom_chart_multi(表の配列,サイコロの面数,サイコロの個数)
-		linetemp = random_chart_multi(mofu_array,6,2);
+	if(body.match(/^[YyＹｙ][UuＵｕ][MmＭｍ][EeＥｅ]/)&&body.match(/^[YyＹｙ][UuＵｕ][MmＭｍ][EeＥｅ][^\s　]/)==null){
+			//夢見表の実装
+			var dreamarray = ["夢見表","漆黒の世界","温かい手","祝砲","孤独な魂","忘れられない笑顔","恋",
+					"死神","誓い","裏切り","放課後","ごちそう",
+					"名もなき歌","炎の中の少女","秘密","心のふるさと",
+					"歪んだ鏡","喪失","哄笑",
+					"家族の肖像","復讐","婚礼"];
+			//random_chart_d66(表,ぴよぴよなどの文字列)
+			linetemp = random_chart_d66(dreamarray,"すやすや…");
+		}
+//----------------------------------ここまでサンプル----------------------------------
+
+	if(body.match(/^[AaＡａ][CcＣｃ][TtＴｔ]/)&&body.match(/^[AaＡａ][CcＣｃ][TtＴｔ][^\s　]/) == null){
+		//アクシデント表の実装
+		var actarray = ["アクシデント表","良かった、何もなし。","意外な手応え。長所短所反転","大失態。判定したPCはに対する声援にチェック","にゃーん。判定したPCはフェイズ終了時まで-1。累積は-2まで。","おおっと大衝突。損傷1。艦隊戦中なら同航行序列のPCにも損傷1","やりすぎ！行動力1d6点消費。"];
+		linetemp = random_chart(actarray,6,"！！");
+		if(linetemp.match(/6/)){
+			var waste = Dice(6);
+			linetemp += " 行動力消費 : " + waste;
+		}
 	}
 
 	if (linetemp=="") return;
