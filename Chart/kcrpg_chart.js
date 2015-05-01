@@ -2,10 +2,28 @@ function (user, body){
 
 	function Dice(number){
 		//引数チェック
-		if(isNaN(number)) return "error : Dice : 'number' demands integer";
-
+		if(isNaN(number)) return "\n error : Dice : 'number' demands integer";
 		var dice = Math.floor( Math.random() * number ) + 1;
 		return dice;
+	}
+	function adjuster_d66(num){
+		//d66の11-66を1~21に当てはめる関数
+		//11-16 1-6
+		//22-26 7-11
+		//33-36 12-15
+		//44-46 16-18
+		//55,56 19,20
+		//66    21
+		if (isNaN(num)) return "\n error : adjuster_d66 : 'num' must be number from d66";
+		var x=0;
+		var y=0;
+		x = Math.floor(num/10);
+		y = Math.floor(num - x*10);
+		if(x >= 1 && x <= 6 && y >= x && y <= 6){
+			var return_num = (-x*x+13*x)/2 -6+y;
+			return return_num;
+		}
+		return "\n error : adjuster_d66 : 'num' must be number from d66";
 	}
 	function random_chart_multi(chart_array, die, num_dice){
 		//ランダムチャート用関数
@@ -16,9 +34,11 @@ function (user, body){
 
 		//返り値: "\n （ぴよぴよ…）コマンド名 : ダイス結果 ランダム選択内容"
 
-		//die,num_diceが数値かどうかチェック。変だったらdie=6,num_dice=1
-		if(isNaN(die)) die=6;
-		if(isNaN(num_dice)) num_dice=1;
+		//die,num_diceが数値かどうかチェック。変だったら弾く
+		if(isNaN(die)) die=0;
+		if(isNaN(num_dice)) num_dice=0;
+		if(die <= 0) return "\n error : random_chart : 'die' must be integer";
+		if(num_dice <= 0) return "\n error : random_chart : 'num_dice' must be integer";
 
 		//chart_arrayが配列であって、十分な要素数を持っているかチェック
 		if ((chart_array instanceof Array) && (chart_array.length >= die * num_dice +1)){
