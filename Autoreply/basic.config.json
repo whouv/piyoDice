@@ -4,6 +4,10 @@
 	file: '../Dice/basic_dice.js'
 	},
 	{
+	body: /^\d+[bB‚‚‚a]\d+/,
+	file: '../Dice/basic_dice.js'
+	},	
+	{
 	body: /^[Aa‚`‚][Cc‚b‚ƒ][Tt‚s‚”]/,
 	file: '../Chart/kcrpg_chart.js'
 	},

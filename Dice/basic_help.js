@@ -9,7 +9,7 @@ function (user , body){
 	var output = "";
 	if(body.match(/^[hHｈＨ][eEｅＥ][lLｌＬ][pPｐＰ]/)&&body.match(/^[hHｈＨ][eEｅＥ][lLｌＬ][pPｐＰ][^\s　]/)==null){
 		//helpコマンド
-		linetemp ='\n「ぴよぴよ～！ぴぴっ！」' + '\n 機能一覧'+'\n　dice機能'+'\n　ACT : アクシデント表' + '\n　Yume : 夢見表'
+		linetemp ='\n「ぴよぴよ～！ぴぴっ！」' + '\n 機能一覧'+'\n　nDm : dice機能(判定付)'+'\n　nBm : バラ振り機能(判定付)'+'\n　ACT : アクシデント表' + '\n　Yume : 夢見表'
 			+ '\n　choice [A] [B]… : 選択機能' + '\n　Help : ヘルプ機能';
 	}
 	if (linetemp=="") return;

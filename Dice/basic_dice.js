@@ -5,6 +5,74 @@ function (user, body){
 		return dice;
 	}
 
+	function ineq_adapter(mozi){
+		mozi = mozi.replace(/†/g,">=");
+		mozi = mozi.replace(/…/g,"<=");
+		mozi = mozi.replace(/ƒ/g,"<");
+		mozi = mozi.replace(/„/g,">");
+		mozi = mozi.replace(/[=]/g,"+=");
+		//“™†•s“™†‚Ì“ª‚É+‚ğ‚Â‚¯‚é
+		mozi = mozi.replace(/>\+/g,">");
+		mozi = mozi.replace(/<\+/g,"<");
+		mozi = mozi.replace(/=>/g,">=");
+		mozi = mozi.replace(/=</g,"<=");
+		mozi = mozi.replace(/</g,"+<");
+		mozi = mozi.replace(/>/g,"+>");
+		return mozi;
+	}
+	function ineq_identifier(mozi){
+		if(mozi.match(/^<=/)){
+			return 2;
+		}else if(mozi.match(/^>=/)){
+			return 4;
+		}else if(mozi.match(/^=/)){
+			return 3;
+		}else if(mozi.match(/^</)){
+			return 1;
+		}else if(mozi.match(/^>/)){
+			return 5;
+		}
+		return 0;
+	}
+	function ineq_char(param_eq){
+		var noneqArray =["","<","<=","=",">=",">"];
+		return noneqArray[param_eq];
+	}
+	function ineq_judge(param_eq, total, num_achieve){
+		var judgeResult = 0;
+		if(param_eq == 1){
+			if(total < num_achieve){
+				judgeResult = 1;
+			}else{
+				judgeResult = 0;
+			}
+		}else if(param_eq == 2){
+			if(total <= num_achieve){
+				judgeResult = 1;
+			}else{
+				judgeResult = 0;
+			}
+		}else if(param_eq == 3){
+			if(total == num_achieve){
+				judgeResult = 1;
+			}else{
+				judgeResult = 0;
+			}
+		}else if(param_eq == 4){
+			if(total >= num_achieve){
+				judgeResult = 1;
+			}else{
+				judgeResult = 0;
+			}
+		}else if(param_eq == 5){
+			if(total > num_achieve){
+				judgeResult = 1;
+			}else{
+				judgeResult = 0;
+			}
+		}
+		return judgeResult;
+	}
 	//‰ºˆ—i–³ŒÀƒ‹[ƒv–h~“™j
 
 	//Bot‚ª•Ô‚µ‚½•¶š‚É‚Í”½‰‚µ‚È‚¢
@@ -12,7 +80,9 @@ function (user, body){
 	//ŠY“–‚È‚µ‚¾‚Á‚½‚ç•Ô‚·
 	if (body.match(/(\n|^)(\d*?[rR‚’‚q])??[\s@]??[\d\-|]{\+]*?\d*?[dD‚„‚c]\d*/) == null) {
 		if(body.match(/^[cC‚ƒ‚b][hH‚ˆ‚g][oO‚‚n][iI‚‰‚h][cC‚ƒ‚b][Ee‚d‚…][\s@]/) == null ){
-			return;
+			if(body.match(/^\d+[Bb‚a‚‚]\d+/) == null){
+				return;
+			}
 		}
 	}
 	if (body.match(/(\n|^)(\d*?[rR‚’‚q])??[\s@]??[\d\-|]{\+]*?\d*?[dD‚„‚c]\d*[^\s\d\+\-{|]@>=<„ƒ…†]/)) return;
@@ -23,8 +93,7 @@ function (user, body){
 		body = bodytemp[1];
 	}
 
-	//s‚ğ•ªŠ„
-
+	//s‚²‚Æ‚É•ªŠ„
 	line = body.split(/(\n|\r|\n\r)/);
 	var linetemp = "";
 	var inlinetemp = "";
@@ -63,22 +132,7 @@ function (user, body){
 				line[g] = line[g].replace(/[\-|]]/g,"+-");
 				line[g] = line[g].replace(/@/g," ");
 
-				//”¼Šp•ÏŠ·
-				line[g] = line[g].replace(/†/g,">=");
-				line[g] = line[g].replace(/…/g,"<=");
-				line[g] = line[g].replace(/ƒ/g,"<");
-				line[g] = line[g].replace(/„/g,">");
-
-
-				line[g] = line[g].replace(/[=]/g,"+=");
-				//“™†•s“™†‚Ì“ª‚É+‚ğ‚Â‚¯‚é
-
-				line[g] = line[g].replace(/>\+/g,">");
-				line[g] = line[g].replace(/<\+/g,"<");
-				line[g] = line[g].replace(/=>/g,">=");
-				line[g] = line[g].replace(/=</g,"<=");
-				line[g] = line[g].replace(/</g,"+<");
-				line[g] = line[g].replace(/>/g,"+>");
+				line[g] = ineq_adapter(line[g]);				
 
 				//s‚ğƒuƒƒbƒN–ˆ‚É•ªŠ„
 
@@ -114,7 +168,7 @@ function (user, body){
 						temp = block[i].split(/\+/);
 
 						var diceResult = "";
-						var Result = "";
+						var result = "";
 						var total = 0;
 						var fixed = 0;
 						var detail = "";
@@ -201,7 +255,7 @@ function (user, body){
 								if (X == 1) {
 									detail = '';
 									if(flag_d66 == true && Y == 66){
-									detail = detailtemp;
+										detail = detailtemp;
 									}
 								}
 
@@ -214,18 +268,9 @@ function (user, body){
 								if (temp[j].match(/^(>|=|<|<=|>=)\d+/) && param_eq == 0){
 									comtemp = temp[j] + " ";//param_eq num_achieve
 									var cut_pos = 1;
-									if(temp[j].match(/^<=/)){
-										param_eq = 2;
+									param_eq = ineq_identifier(temp[j]);
+									if(param_eq == 2 || param_eq == 4) {
 										cut_pos = 2;
-									}else if(temp[j].match(/^>=/)){
-										param_eq = 4;
-										cut_pos = 2;
-									}else if(temp[j].match(/^=/)){
-										param_eq = 3;
-									}else if(temp[j].match(/^</)){
-										param_eq = 1;
-									}else if(temp[j].match(/^>/)){
-										param_eq = 5;
 									}
 									temp[j]= temp[j].substring(cut_pos,temp[j].length);
 									if(isNaN(num_achieve)) {
@@ -270,55 +315,20 @@ function (user, body){
 					if(param_eq != 0){
 						var judgeResult = "‚Ò‚æ";
 						//“™†•s“™† non:0 <:1 <=:2 =:3 >=:4 >:5
-						if(param_eq == 1){
-							if(total < num_achieve){
-								judgeResult = "¬Œ÷";
-							}else{
-								judgeResult = "¸”s";
+						if(ineq_judge(param_eq, total, num_achieve) == 1){
+							judgeResult = "¬Œ÷";
+						}else{
+							judgeResult = "¸”s";
+						}
+						if(param_eq == 4 || param_eq == 5){
+							if(flag_special){
+								judgeResult = "ƒXƒyƒVƒƒƒ‹I";
 							}
-						}else if(param_eq == 2){
-							if(total <= num_achieve){
-								judgeResult = "¬Œ÷";
-							}else{
-								judgeResult = "¸”s";
-							}
-						}else if(param_eq == 3){
-							if(total == num_achieve){
-								judgeResult = "¬Œ÷";
-							}else{
-								judgeResult = "¸”s";
-							}
-						}else if(param_eq == 4){
-							if(total >= num_achieve){
-								if(flag_special){
-									judgeResult = "ƒXƒyƒVƒƒƒ‹I";
-								}else{
-									judgeResult = "¬Œ÷";
-								}
-							}else{
-								if(flag_fumble){
-									judgeResult = "ƒtƒ@ƒ“ƒuƒ‹I";
-								}else{
-									judgeResult = "¸”s";
-								}
-							}
-						}else if(param_eq == 5){
-							if(total > num_achieve){
-								if(flag_special){
-									judgeResult = "ƒXƒyƒVƒƒƒ‹I";
-								}else{
-									judgeResult = "¬Œ÷";
-								}
-							}else{
-								if(flag_fumble){
-									judgeResult = "ƒtƒ@ƒ“ƒuƒ‹I";
-								}else{
-									judgeResult = "¸”s";
-								}
+							if(flag_fumble){
+								judgeResult = "ƒtƒ@ƒ“ƒuƒ‹I";
 							}
 						}
-						var noneqArray =["","<","<=","=",">=",">"];
-						inlinetemp = '\n' + '@' + comment + ordinal + '  (‚Ò‚æ‚Ò‚æc)   ' + result + '@[ ŒvF' + total +' ] ' + noneqArray[param_eq] + num_achieve +' '+ judgeResult;
+						inlinetemp = '\n' + '@' + comment + ordinal + '  (‚Ò‚æ‚Ò‚æc)   ' + result + '@[ ŒvF' + total +' ] ' + ineq_char(param_eq) + num_achieve +' '+ judgeResult;
 						flag_calc = true;
 					}else{//param_eq==0
 						inlinetemp = '\n' + '@' + comment + ordinal + '  (‚Ò‚æ‚Ò‚æc)   ' + result + '@[ ŒvF' + total + ' ]';
@@ -334,6 +344,64 @@ function (user, body){
 
 		//“Áê”½‰•¶šˆ—:else_line[g]
 		//
+		}else if(line[g].match(/^\d+[Bb‚a‚‚]\d+/) && line[g].match(/^\d+[Bb‚a‚‚]\d+[^\s@>=<„ƒ†…]/)==null){
+			//XBY‚ÌÀ‘•
+			var comment = "";
+			var txttemp;
+			var X = 0;
+			var Y = 0;
+			var detail = "";
+			var detailtemp = [];
+			var total = 0;
+			var param_eq = 0;
+			var cut_pos = 1;
+			var num_achieve = 0;
+			line[g] = ineq_adapter(line[g]);
+			line[g] = line[g].replace(/[b‚‚‚a]/g,"B");
+			txttemp = line[g].split(/[\s@]/);
+
+			for (cnt = 1; cnt < txttemp.length; cnt++){
+				comment += " " + txttemp[cnt];
+			}
+
+			txttemp = txttemp[0].split(/[B\+]/);
+			X = txttemp[0];
+			Y = txttemp[1];
+
+			if(txttemp.length >= 3){
+				var comment_temp = "";
+				param_eq = ineq_identifier(txttemp[2]);
+				if(param_eq == 2 || param_eq ==4){
+					cut_pos = 2;
+				}
+				num_achieve = txttemp[2].substr(cut_pos);
+				if(isNaN(num_achieve)){
+					comment_temp += txttemp[2];
+					param_eq = 0;
+				}
+				for (cnt = 3;cnt < txttemp.length; cnt++){
+					comment_temp += txttemp.length[cnt]
+				}
+			}
+
+			for (cnt = 1; cnt <= X; cnt++){
+				var dicetemp = 0;
+				dicetemp = Dice(Y);
+				detailtemp.push(dicetemp);
+				if(param_eq >= 1){
+					total += ineq_judge(param_eq, dicetemp, num_achieve);
+				}
+			}
+
+			detail = ' (' + detailtemp + ')';
+			
+			if (param_eq >=1){
+				linetemp += '\n@' + comment + ' (‚Ò‚æ‚Ò‚æc) ' + X + 'B' + Y + ineq_char(param_eq) + num_achieve + ' : ' + total + detail;
+			}else{
+				linetemp += '\n@' + comment + ' (‚Ò‚æ‚Ò‚æc) ' + X + 'B' + Y + ' : ' + detail;
+			}
+			flag_calc = true;
+
 		}else if(line[g].match(/^[cC‚ƒ‚b][hH‚ˆ‚g][oO‚‚n][iI‚‰‚h][cC‚ƒ‚b][Ee‚d‚…][\s@]/)){
 			//choice‚ÌÀ‘•
 			var choiceElm;
