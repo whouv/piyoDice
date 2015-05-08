@@ -344,7 +344,7 @@ function (user, body){
 
 		//“ÁŽê”½‰ž•¶Žšˆ—:else_line[g]
 		//
-		}else if(line[g].match(/^\d+[Bb‚a‚‚]\d+/) && line[g].match(/^\d+[Bb‚a‚‚]\d+[^\s@>=<„ƒ†…]/)==null){
+		}else if(line[g].match(/^\d+[Bb‚a‚‚]\d+/) && line[g].match(/^\d+[Bb‚a‚‚]\d+[^\s\d@>=<„ƒ†…]/)==null){
 			//XBY‚ÌŽÀ‘•
 			var comment = "";
 			var txttemp;
@@ -401,7 +401,6 @@ function (user, body){
 				linetemp += '\n@' + comment + ' (‚Ò‚æ‚Ò‚æc) ' + X + 'B' + Y + ' : ' + detail;
 			}
 			flag_calc = true;
-
 		}else if(line[g].match(/^[cC‚ƒ‚b][hH‚ˆ‚g][oO‚‚n][iI‚‰‚h][cC‚ƒ‚b][Ee‚d‚…][\s@]/)){
 			//choice‚ÌŽÀ‘•
 			var choiceElm;
