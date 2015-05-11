@@ -37,6 +37,11 @@
 	},
 
 	{
+	body: /^\d*[xX‚˜‚w]\d*/,
+	file: '../Dice/dx_dice.js'
+	},
+
+	{
 	body: /(\n|^)\d*(sr|‚“‚’).*[dD‚„‚c]/,
 	file: '../Dice/sr_dice.js'
 	},
